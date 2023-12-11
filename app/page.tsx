@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image';
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Task from "@/components/Task";
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
     ]);
 
     function countCompleted() {
-        return allTasks.filter(task => task.isCompleted === true).length;
+        return allTasks.filter(task => task.isCompleted).length;
     }
 
     function toggleIsCompleted(key: number) {
@@ -47,6 +47,17 @@ export default function Home() {
 
     const [tasks, setTasks] = useState(allTasks.length);
     const [completed, setCompleted] = useState(countCompleted());
+const [inputValue, setInputValue] = useState('');
+    function createTask() {
+        if (!inputValue) return;
+
+        setAllTasks(current => [...current, {
+            text: inputValue,
+            isCompleted: false
+        }]);
+
+        setInputValue("");
+    }
 
 
     return (
@@ -60,9 +71,12 @@ export default function Home() {
                 <main className="w-full max-w-[736px] mx-auto mt-[-27px]">
                     <div className="flex justify-center items-center gap-2 w-full h-[52px]">
                         <input
-                            className="w-full h-full rounded-lg px-4 bg-gray-500 border border-gray-700 outline-none placeholder:text-gray-300"
+                            value={inputValue}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+                            className="w-full h-full rounded-lg px-4 bg-gray-500 border border-gray-700 outline-none text-gray-100 placeholder:text-gray-300"
                             placeholder="Add a new task" type="text"/>
                         <button
+                            onClick={createTask}
                             className="h-full px-4 bg-blueDark text-gray-100 text-md font-bold rounded-lg flex justify-center items-center gap-2 transition hover:bg-blue">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
@@ -126,19 +140,20 @@ export default function Home() {
                                 </div>
                             </>
                         }
-                        {
-                            tasks > 0 &&
-                            <>
-                                {
-                                    allTasks.map((el, i) => {
-                                        return <Task key={i} isCompleted={el.isCompleted}
-                                                     toggleIsCompleted={() => toggleIsCompleted(i)}
-                                                     deleteTask={() => deleteTask(i)}>{el.text}</Task>
-                                    })
-                                }
-                            </>
-                        }
-
+                        <div className="flex flex-col items-center gap-3">
+                            {
+                                tasks > 0 &&
+                                <>
+                                    {
+                                        allTasks.map((el, i) => {
+                                            return <Task key={i} isCompleted={el.isCompleted}
+                                                         toggleIsCompleted={() => toggleIsCompleted(i)}
+                                                         deleteTask={() => deleteTask(i)}>{el.text}</Task>
+                                        })
+                                    }
+                                </>
+                            }
+                        </div>
                     </div>
                 </main>
             </div>

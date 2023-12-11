@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    @apply select-none;
+}
+
 body {
     @apply bg-gray-600;
 }
