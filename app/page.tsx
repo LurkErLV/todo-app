@@ -1,29 +1,25 @@
 "use client"
 
 import Image from 'next/image';
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Task from "@/components/Task";
 
 export default function Home() {
 
-    const [allTasks, setAllTasks] = useState([
-        {
-            text: "1",
-            isCompleted: false,
-        },
-        {
-            text: "2",
-            isCompleted: false,
-        },
-        {
-            text: "3",
-            isCompleted: false,
-        },
-        {
-            text: "4",
-            isCompleted: true,
-        },
-    ]);
+    useEffect(() => {
+        const tasksFromLocalStorage = localStorage.getItem("tasks");
+
+        if (!tasksFromLocalStorage) return;
+
+        setAllTasks(JSON.parse(tasksFromLocalStorage));
+    }, []);
+
+    function setTasksToLocalStorage() {
+        localStorage.setItem("tasks", JSON.stringify(allTasks));
+    }
+
+
+    const [allTasks, setAllTasks] = useState<any[]>([]);
 
     function countCompleted() {
         return allTasks.filter(task => task.isCompleted).length;
@@ -33,11 +29,15 @@ export default function Home() {
         allTasks[key].isCompleted = !allTasks[key].isCompleted;
         setCompleted(countCompleted());
         setTasks(allTasks.length);
+
+        setTasksToLocalStorage();
     }
 
     async function deleteTask(key: number) {
         const newAllTasks = allTasks.filter((_el, i) => i !== key);
-        setAllTasks(newAllTasks);
+        setAllTasks(newAllTasks)
+
+        localStorage.setItem("tasks", JSON.stringify(newAllTasks));
     }
 
     useEffect(() => {
@@ -47,8 +47,10 @@ export default function Home() {
 
     const [tasks, setTasks] = useState(allTasks.length);
     const [completed, setCompleted] = useState(countCompleted());
-const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState('');
+
     function createTask() {
+        console.log(allTasks)
         if (!inputValue) return;
 
         setAllTasks(current => [...current, {
@@ -56,6 +58,11 @@ const [inputValue, setInputValue] = useState('');
             isCompleted: false
         }]);
 
+        localStorage.setItem("tasks", JSON.stringify([...allTasks, {
+            text: inputValue,
+            isCompleted: false
+        }]));
+        
         setInputValue("");
     }
 
