@@ -1,4 +1,4 @@
-# Nextjs Todo App
+# Nextjs Todo App with LocalStorage
 
 ### Commands
 
