@@ -18,3 +18,5 @@ yarn lint ## Lint project
 
 #### Design by *Millena Martins*.
 #### Coded by *Alberts Matrozis*.
+
+Pet Project
